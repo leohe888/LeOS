@@ -20,15 +20,14 @@ bximage -q -hd=16 -func=create -sectsize=512 -imgmode=flat master.img
 dd if=boot.bin of=master.img bs=512 count=1 conv=notrunc
 ```
 
-Windows 系统：
-
 - 配置 bochs：
-
-  - display_library: win32, options="gui_debug"
-  - ata0-master: type=disk, path="master.img", mode=flat
+  - Windows 系统：
+    - display_library: win32, options="gui_debug"
+    - ata0-master: type=disk, path="master.img", mode=flat
+  - Ubuntu22.04：
+    - display_library: x, options="gui_debug"
+    - ata0-master: type=disk, path="master.img", mode=flat
 
 - 启动 bochs 及其图形化调试器的命令：
 
-    ```shell
-    bochs -debugger
-    ```
+  - `bochs -debugger`
