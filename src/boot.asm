@@ -1,6 +1,6 @@
 [org 0x7c00]
 
-; 设置显示模式为文本模式
+; 将显示模式设置为文本模式
 mov ax, 3
 int 0x10
 
@@ -11,13 +11,28 @@ mov es, ax
 mov ss, ax
 mov sp, 0x7c00
 
-; 0xb8000 是文本模式下的显存起始地址
-mov ax, 0xb800
-mov es, ax
-mov byte [0], 'H'
+xchg bx, bx ; bochs 魔数断点，需要修改 bochs 配置文件：magic_break: enabled=1
+
+mov si, booting
+call print
 
 ; 死循环
 jmp $
+
+print:
+    mov ah, 0x0e
+.next:
+    mov al, [si]
+    cmp al, 0
+    jz .done
+    int 0x10
+    inc si
+    jmp .next
+.done:
+    ret
+
+booting:
+    db "Booting LeOS...", 10, 13, 0 ; \n\r\0
 
 ; 将中间未使用的空间填充为 0
 times 510-($-$$) db 0

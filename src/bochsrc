@@ -3,9 +3,9 @@ plugin_ctrl: voodoo=false, pcidev=false, e1000=false, gameport=true, usb_ehci=fa
 config_interface: textconfig
 display_library: x, options="gui_debug"
 memory: host=32, guest=32
-romimage: file="/usr/share/bochs/BIOS-bochs-latest", address=0x00000000, options=none
+romimage: file="/usr/share/bochs/BIOS-bochs-legacy", address=0x00000000, options=none
 vgaromimage: file="/usr/share/bochs/VGABIOS-lgpl-latest"
-boot: floppy
+boot: disk
 floppy_bootsig_check: disabled=0
 floppya: type=1_44
 # no floppyb
@@ -35,7 +35,7 @@ cpuid: avx_fma=false, bmi=0, xop=false, fma4=false, tbm=false, x86_64=true, 1g_p
 cpuid: pcid=false, fsgsbase=false, smep=false, smap=false, mwait=true, vmx=1, svm=false
 print_timestamps: enabled=0
 debugger_log: -
-magic_break: enabled=0
+magic_break: enabled=1
 port_e9_hack: enabled=0
 private_colormap: enabled=0
 clock: sync=none, time0=local, rtc_sync=0
