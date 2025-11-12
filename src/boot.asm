@@ -14,21 +14,14 @@ mov sp, 0x7c00
 mov si, booting
 call print
 
-xchg bx, bx ; bochs 魔数断点，需要修改 bochs 配置文件：magic_break: enabled=1
-
 mov edi, 0x1000 ; 目标地址
-mov ecx, 0  ; 起始扇区号
-mov bl, 1   ; 扇区数量
+mov ecx, 2  ; 起始扇区号
+mov bl, 4   ; 扇区数量
 call read_disk
 
-xchg bx, bx ; bochs 魔数断点
-
-mov edi, 0x1000 ; 目标地址
-mov ecx, 1  ; 起始扇区号
-mov bl, 1   ; 扇区数量
-call write_disk
-
-xchg bx, bx ; bochs 魔数断点
+cmp word [0x1000], 0x55aa
+jnz error
+jmp 0:0x1002
 
 ; 死循环
 jmp $
@@ -60,7 +53,7 @@ read_disk:
 
     inc dx  ; 0x1f6
     shr ecx, 8
-    and cl, 0b1111  ; 将高 4 位清零
+    and cl, 0b1111  ; 将高 4 位置为 0
     mov al, 0b1110_0000  ; 主盘，LBA 模式
     or al, cl
     out dx, al
@@ -69,7 +62,7 @@ read_disk:
     mov al, 0x20  ; 读硬盘
     out dx, al
 
-    xor ecx, ecx    ; 将 ecx 清零
+    xor ecx, ecx    ; 将 ecx 置为 0
     mov cl, bl  ; 得到要读写的扇区数量
 
     .read:
@@ -106,79 +99,6 @@ read_disk:
             loop .readw
         ret
 
-; 写入磁盘
-; 输入：edi - 数据地址，cl -起始扇区号，bl - 扇区数量
-write_disk:
-    ; 设置读写的扇区数量
-    mov dx, 0x1f2
-    mov al, bl
-    out dx, al
-
-    ; 设置起始扇区号的 0 ~ 7 位
-    inc dx  ; 0x1f3
-    mov al, cl
-    out dx, al
-
-    ; 设置起始扇区号的 8 ~ 15 位
-    inc dx  ; 0x1f4
-    shr ecx, 8
-    mov al, cl
-    out dx, al
-
-    ; 设置起始扇区号的 16 ~ 23 位
-    inc dx  ; 0x1f5
-    shr ecx, 8
-    mov al, cl
-    out dx, al
-
-    inc dx  ; 0x1f6
-    shr ecx, 8
-    and cl, 0b1111  ; 将高 4 位清零
-    mov al, 0b1110_0000  ; 主盘，LBA 模式
-    or al, cl
-    out dx, al
-
-    inc dx  ; 0x1f7
-    mov al, 0x30  ; 写硬盘
-    out dx, al
-
-    xor ecx, ecx    ; 将 ecx 清零
-    mov cl, bl  ; 得到要读写的扇区数量
-
-    .write:
-        push cx ; 保存 cx
-        call .writes ; 写入一个扇区
-        call .waits ; 等待磁盘繁忙结束
-        pop cx  ; 恢复 cx
-        loop .writes
-    
-    ret
-
-    .waits:
-        mov dx, 0x1f7
-        .check:
-            in al, dx
-            jmp $ + 2   ; 直接跳转到下一行 = nop
-            jmp $ + 2   ; 一点点延迟
-            jmp $ + 2
-            and al, 0b1000_0000 ; 保留第 7 位
-            cmp al, 0b0000_0000
-            jnz .check
-        ret
-    
-    .writes:
-        mov dx, 0x1f0
-        mov cx, 256  ; 每个扇区 512 字节，每个字 2 字节，共 256 个字
-        .writew:
-            mov ax, [edi]
-            out dx, ax
-            jmp $ + 2   ; 直接跳转到下一行 = nop
-            jmp $ + 2   ; 一点点延迟
-            jmp $ + 2
-            add edi, 2
-            loop .writew
-        ret
-
 ; 打印字符串
 ; 输入：si - 字符串地址
 print:
@@ -195,6 +115,15 @@ print:
 
 booting:
     db "Booting LeOS...", 10, 13, 0 ; \n\r\0
+
+error:
+    mov si, .msg
+    call print
+.halt:
+    hlt ; 停机
+    jmp .halt ; 如果被唤醒，则继续停机
+ 
+    .msg db "Booting Error!!!", 10, 13, 0 ; \n\r\0
 
 ; 将中间未使用的空间填充为 0
 times 510-($-$$) db 0
