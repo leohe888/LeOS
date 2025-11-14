@@ -70,7 +70,7 @@ read_disk:
         call .waits; 等待磁盘准备好
         call .reads; 读取一个扇区
         pop cx; 恢复 cx
-        loop .reads
+        loop .read
     
     ret
 

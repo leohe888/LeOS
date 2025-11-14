@@ -1,7 +1,7 @@
 #include <leos/leos.h>
 
 int magic = LEOS_MAGIC;
-char message[] = "hello leos!!!\n";
+char message[] = "hello leos!!!";
 
 void kernel_init()
 {

@@ -2,6 +2,6 @@
 0001000d T kernel_init
 00013000 D magic
 00013004 D message
-00013013 D __bss_start
-00013013 D _edata
+00013012 D __bss_start
+00013012 D _edata
 00013014 D _end

@@ -115,30 +115,30 @@ read_disk:
     out dx, al
 
     ; 设置起始扇区号的 0 ~ 7 位
-    inc dx  ; 0x1f3
+    inc dx; 0x1f3
     mov al, cl
     out dx, al
 
     ; 设置起始扇区号的 8 ~ 15 位
-    inc dx  ; 0x1f4
+    inc dx; 0x1f4
     shr ecx, 8
     mov al, cl
     out dx, al
 
     ; 设置起始扇区号的 16 ~ 23 位
-    inc dx  ; 0x1f5
+    inc dx; 0x1f5
     shr ecx, 8
     mov al, cl
     out dx, al
 
-    inc dx  ; 0x1f6
+    inc dx; 0x1f6
     shr ecx, 8
     and cl, 0b1111; 将高 4 位置为 0
     mov al, 0b1110_0000; 主盘，LBA 模式
     or al, cl
     out dx, al
 
-    inc dx  ; 0x1f7
+    inc dx; 0x1f7
     mov al, 0x20; 读硬盘
     out dx, al
 
@@ -150,7 +150,7 @@ read_disk:
         call .waits; 等待磁盘准备好
         call .reads; 读取一个扇区
         pop cx; 恢复 cx
-        loop .reads
+        loop .read
     
     ret
 
