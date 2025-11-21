@@ -78,9 +78,9 @@ read_disk:
         mov dx, 0x1f7
         .check:
             in al, dx
-            jmp $ + 2; 直接跳转到下一行 = nop
             jmp $ + 2; 一点点延迟
-            jmp $ + 2
+            jmp $ + 2; 一点点延迟
+            jmp $ + 2; 一点点延迟
             and al, 0b1000_1000; 保留第 3 和第 7 位
             cmp al, 0b0000_1000
             jnz .check
@@ -91,7 +91,7 @@ read_disk:
         mov cx, 256; 每个扇区 512 字节，每个字 2 字节，共 256 个字
         .readw:
             in ax, dx
-            jmp $ + 2; 直接跳转到下一行 = nop
+            jmp $ + 2; 一点点延迟
             jmp $ + 2; 一点点延迟
             jmp $ + 2
             mov [edi], ax

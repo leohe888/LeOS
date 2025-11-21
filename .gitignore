@@ -1,2 +1,14 @@
-.vscode
-build
+*.img
+*.ini
+*.bin
+*.map
+*.o
+*.out
+*.zst
+*.gz
+*.lock
+*.vmdk
+
+bochs/src
+bochs/pkg
+bochs/bochs-2.7

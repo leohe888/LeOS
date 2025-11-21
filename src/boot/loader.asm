@@ -158,7 +158,7 @@ read_disk:
         mov dx, 0x1f7
         .check:
             in al, dx
-            jmp $ + 2; 直接跳转到下一行 = nop
+            jmp $ + 2; 一点点延迟
             jmp $ + 2; 一点点延迟
             jmp $ + 2
             and al, 0b1000_1000; 保留第 3 和第 7 位
@@ -171,7 +171,7 @@ read_disk:
         mov cx, 256; 每个扇区 512 字节，每个字 2 字节，共 256 个字
         .readw:
             in ax, dx
-            jmp $ + 2; 直接跳转到下一行 = nop
+            jmp $ + 2; 一点点延迟
             jmp $ + 2; 一点点延迟
             jmp $ + 2
             mov [edi], ax
@@ -179,8 +179,8 @@ read_disk:
             loop .readw
         ret
 
-code_selector equ (1 << 3)
-data_selector equ (2 << 3)
+code_selector equ (1 << 3); 指向 GDT 中的第 1 个有效描述符
+data_selector equ (2 << 3); 指向 GDT 中的第 2 个有效描述符
 
 memory_base equ 0; 基地址
 memory_limit equ ((1024 * 1024 * 1024 * 4) / (1024 * 4)) - 1; 段界限（4GB / 4KB - 1）

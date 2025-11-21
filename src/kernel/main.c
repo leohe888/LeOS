@@ -1,13 +1,19 @@
 #include <leos/leos.h>
-
-int magic = LEOS_MAGIC;
-char message[] = "hello leos!!!";
+#include <leos/types.h>
+#include <leos/io.h>
+#include <leos/string.h>
+#include <leos/console.h>
+#include <leos/printk.h>
+#include <leos/assert.h>
+#include <leos/debug.h>
 
 void kernel_init()
 {
-    char *video = (char *)0xb8000; // 文本模式显存地址
-    for (int i = 0; i < sizeof(message); i++)
-    {
-        video[i * 2] = message[i];
-    }
-}
+    console_init();
+    
+    BMB;
+
+    DEBUGK("debug leos!!!\n");
+
+    return 0;
+};

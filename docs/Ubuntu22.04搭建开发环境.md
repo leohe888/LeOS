@@ -3,4 +3,5 @@
 ```console
 sudo apt update
 sudo apt install nasm bochs-x
+sudo apt install qemu-system qemu-user qemu-user-static
 ```
