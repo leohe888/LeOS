@@ -6,14 +6,12 @@
 #include <leos/printk.h>
 #include <leos/assert.h>
 #include <leos/debug.h>
+#include <leos/global.h>
 
 void kernel_init()
 {
     console_init();
+    gdt_init();
     
-    BMB;
-
-    DEBUGK("debug leos!!!\n");
-
     return 0;
 };
