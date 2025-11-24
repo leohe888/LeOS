@@ -7,11 +7,14 @@
 #include <leos/assert.h>
 #include <leos/debug.h>
 #include <leos/global.h>
+#include <leos/task.h>
+#include <leos/interrupt.h>
 
 void kernel_init()
 {
     console_init();
     gdt_init();
-    
-    return 0;
+    // task_init();
+    interrupt_init();
+    return;
 };
